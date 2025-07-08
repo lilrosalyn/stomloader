@@ -25,11 +25,11 @@ public class StomLoader implements DedicatedServerModInitializer {
         }
 
         if (!serverJar.exists()) {
-            System.err.printf("The JAR file %s could not be found.", serverJar.getAbsolutePath());
+            System.err.printf("The JAR file `%s` could not be found.", serverJar.getAbsolutePath());
             return;
         }
 
-        System.out.printf("Found the %s JAR file. Running now.%n", serverJar.getAbsolutePath());
+        System.out.printf("Found the `%s` JAR file. Running now.%n", serverJar.getAbsolutePath());
         Process viaProxy = null;
         Process process = null;
 
@@ -45,6 +45,7 @@ public class StomLoader implements DedicatedServerModInitializer {
             var memory = System.getenv("SERVER_RAM");
             var processBuilder = new ProcessBuilder(getExecutablePath(), "-jar", "-Xms" + memory, "-Xmx" + memory, serverJar.getAbsolutePath())
                     .inheritIO();
+            processBuilder.directory(serverJar.getParentFile());
 
             if (viaProxy != null)
                 processBuilder.environment().remove("SERVER_PORT");
