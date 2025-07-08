@@ -13,4 +13,4 @@ Otherwise, it must bind to port `25575`.
 4. You're good to go!
 
 Keep in note that stomloader will automatically download and start ViaProxy alongside the server for version support.<br />
-This functionality may be disabled in the newly generated `stomloader.properties` directory.<br />
+This functionality may be disabled in the newly generated `stomloader.properties` file.<br />
