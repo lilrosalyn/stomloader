@@ -7,22 +7,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class StomLoader implements DedicatedServerModInitializer {
-    private static File SERVER = new File("airbrush.jar");
+    private static File serverJar = new File("airbrush.jar");
     private static boolean enableViaProxy = false;
     private static String[] viaProxyArgs = new String[] {"cli", "--bind-address", "0.0.0.0:25575"};
 
     @Override public void onInitializeServer() {}
     public static void main() {
-        if (!SERVER.exists()) {
-            System.err.println("The Airbrush JAR file could not be found. Please upload it at `airbrush.jar`.");
-            return;
-        }
-
         try {
             initializeProperties();
         } catch (IOException exception) {
@@ -30,7 +24,12 @@ public class StomLoader implements DedicatedServerModInitializer {
             exception.printStackTrace();
         }
 
-        System.out.println("Found the Airbrush JAR file. Running now.");
+        if (!serverJar.exists()) {
+            System.err.printf("The JAR file %s could not be found.", serverJar.getAbsolutePath());
+            return;
+        }
+
+        System.out.printf("Found the %s JAR file. Running now.%n", serverJar.getAbsolutePath());
         Process viaProxy = null;
         Process process = null;
 
@@ -44,7 +43,7 @@ public class StomLoader implements DedicatedServerModInitializer {
 
         try {
             var memory = System.getenv("SERVER_RAM");
-            var processBuilder = new ProcessBuilder(getExecutablePath(), "-jar", "-Xms" + memory, "-Xmx" + memory, SERVER.getAbsolutePath())
+            var processBuilder = new ProcessBuilder(getExecutablePath(), "-jar", "-Xms" + memory, "-Xmx" + memory, serverJar.getAbsolutePath())
                     .inheritIO();
 
             if (viaProxy != null)
@@ -54,7 +53,7 @@ public class StomLoader implements DedicatedServerModInitializer {
             Runtime.getRuntime().addShutdownHook(new Thread(process::destroy));
             process.waitFor();
         } catch (IOException exception) {
-            System.err.println("An error occurred when running Airbrush.");
+            System.err.println("An error occurred when running stomloader.");
             exception.printStackTrace();
         } catch (InterruptedException exception) {
             System.out.println("Shutting down...");
@@ -88,7 +87,9 @@ public class StomLoader implements DedicatedServerModInitializer {
                 enableViaProxy = value.equalsIgnoreCase("true");
             else if (key.equalsIgnoreCase("viaproxyArgs"))
                 viaProxyArgs = value.split(" ");
-            else System.err.println("Found unexpected key in stomloader.properties: " + key);
+            else if (key.equalsIgnoreCase("serverJar")) {
+                serverJar = new File(value);
+            } else System.err.println("Found unexpected key in stomloader.properties: " + key);
         }
     }
 
