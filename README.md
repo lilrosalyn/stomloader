@@ -1,5 +1,9 @@
 # stomloader
 
+> [!WARNING]
+> stomloader is no longer safe to use on Minehut, so use at your own risk;
+> your server _will_ get suspended.
+
 stomloader is a Fabric mod that allows you to use custom server JARs. It is specifically designed for Minehut, but could feasibly be used for other hosts as well.
 
 # Usage
